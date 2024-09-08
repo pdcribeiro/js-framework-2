@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module">
+        import { getBuilder } from './index.js'
+        import { getWebUi } from './ui/web.js';
+
+        const ui = getWebUi()
+        const { components, obs, render } = getBuilder(ui)
+        const { Button, Div, P, Span } = components
+
+        const app = Span('hello, world')
+
+        const root = ui.getElementById('root')
+        render(app, root)
+    </script>
+    <script src="/third-party/tailwindcss.min.js"></script>
+    <script defer src="/third-party/alpinejs.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+</html>

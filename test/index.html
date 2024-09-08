@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="module">
+        import * as t from './index.js'
+
+        window.t = t
+    </script>
+    <script src="/third-party/tailwindcss.min.js"></script>
+    <script defer src="/third-party/alpinejs.min.js"></script>
+</head>
+
+<body x-data="{
+    filePath: '',
+    results: [],
+    async init() {
+        const filePath = t.loadFilePath()
+        if (filePath) {
+            this.filePath = filePath
+            const tests = await t.load(filePath)
+            if (tests && tests.length > 0) {
+                this.results = await t.run(tests)
+            }
+        }
+    },
+}" class="flex p-3 h-screen">
+    <div class="mr-3 w-1/2">
+        <form @submit.prevent="t.loadNew(filePath)">
+            <input x-model="filePath" type="text" placeholder="test file path" class="p-1 border" />
+            <button class="p-1 border">Run tests</button>
+        </form>
+        <ul>
+            <template x-for="{ success, description, error } in results">
+                <li class="mb-3">
+                    <template x-if="success">
+                        <p>
+                            <span x-text="description"></span>
+                            <span class="text-green-500"> SUCCESS</span>
+                        </p>
+                    </template>
+                    <template x-if="!success">
+                        <div>
+                            <p>
+                                <span x-text="description"></span>
+                                <span class="text-red-500"> FAIL</span>
+                            </p>
+                            <div class="py-0.5 px-2 text-slate-500 bg-red-200">
+                                <p class="font-semibold">
+                                    Error: <span x-text="error.message"></span>
+                                </p>
+                                <ul>
+                                    <template x-for="line in error.stack.split('\n')">
+                                        <li x-text="line">
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                    </template>
+                </li>
+            </template>
+        </ul>
+    </div>
+    <iframe src="" frameborder="0" class="w-1/2"></iframe>
+</body>
+
+</html>
